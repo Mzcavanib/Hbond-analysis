@@ -41,8 +41,8 @@ def plot_hbond_lines(all_data, output_file="hbonds_vs_time.png"):
         y_smooth = moving_average(hbonds, window=50)
         x_smooth = times_ns[:len(y_smooth)]
         plt.plot(x_smooth, y_smooth, linewidth=1.8, label=label)
-    plt.xlabel("Tiempo (ns)")
-    plt.ylabel("Puentes de hidrógeno")
+    plt.xlabel("Tiempo [ns]", fontsize=12)
+    plt.ylabel("Puentes de hidrógeno", fontsize=12)
     plt.title("Puentes de hidrógeno vs tiempo (líneas suavizadas)")
     plt.grid(True, alpha=0.3)
     plt.legend()
