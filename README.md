@@ -15,4 +15,4 @@ Finally, I present `hbondkernel.py`, a script that plots hydrogen bond count ver
 ```
 
 Include as many `.xvg` files as needed for comparison.
-
+As well for `hbond_vs_time.py`. The legend can be adjusted depending on the dataset used.
