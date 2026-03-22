@@ -38,7 +38,6 @@ def moving_average(y, window=50):
 def plot_hbond_lines(all_data, output_file="hbonds_vs_time.png"):
     plt.figure(figsize=(10, 6))
     for label, (times_ns, hbonds) in all_data.items():
-        # aplicar suavizado
         y_smooth = moving_average(hbonds, window=50)
         x_smooth = times_ns[:len(y_smooth)]
         plt.plot(x_smooth, y_smooth, linewidth=1.8, label=label)
@@ -56,6 +55,15 @@ if __name__ == "__main__":
         print("Uso: python3 hbond_vs_time.py archivo1.xvg archivo2.xvg ...")
         sys.exit(1)
 
+    # Diccionario de etiquetas personalizadas
+    etiquetas = {
+        "hbond_WT_complex.xvg": "WT",
+        "hbond_alpha_complex.xvg": "Alpha",
+        "hbond_gamma_complex.xvg": "Gamma",
+        "hbond_delta_complex.xvg": "Delta",
+        "hbond_omicronba1_complex.xvg": "Omicron BA.1"
+    }
+
     all_data = {}
 
     for filename in sys.argv[1:]:
@@ -64,7 +72,8 @@ if __name__ == "__main__":
             print(f"{filename}: no contiene datos válidos")
             continue
 
-        label = filename.replace("hbond_", "").replace("_complex.xvg", "").capitalize()
+        # Usa la etiqueta definida, si no existe usa el nombre del archivo
+        label = etiquetas.get(filename, filename)
         all_data[label] = (times_ns, hbonds)
 
         print(f"\n=== Resultados para {label} ===")
