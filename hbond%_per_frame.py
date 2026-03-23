@@ -5,7 +5,6 @@ import seaborn as sns
 import os
 import re
 
-# === CONFIGURACIÓN ===
 PDB = "md.pdb"
 TPR = "md.tpr"
 NDX = "index.ndx"
@@ -59,7 +58,7 @@ def calculate_occurrence(csv_file, ndx_file):
     occurrence = df.mean() * 100
     return df, occurrence.sort_values(ascending=False)
 
-# === PASO 5: Graficar ocurrencia por par ===
+# === Step 5: ocurrency by pairs ===
 def plot_pair_occurrence(occurrence, output_file):
     sns.set(style="whitegrid")
     plt.figure(figsize=(12, 8))
@@ -71,7 +70,7 @@ def plot_pair_occurrence(occurrence, output_file):
     plt.savefig(output_file, dpi=300)
     plt.close()
 
-# === PASO 6: Calcular ocurrencia por residuo ===
+# === Step 6: hbond ocurrency ===
 def calculate_residue_occurrence(df):
     residue_counts = {}
     for col in df.columns:
@@ -95,7 +94,7 @@ def plot_residue_occurrence(residue_series, output_file):
     plt.savefig(output_file, dpi=300)
     plt.close()
 
-# === FLUJO COMPLETO ===
+# === Complete flow ===
 if __name__ == "__main__":
     check_required_files()
     run_gmx_hbond()
