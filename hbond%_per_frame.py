@@ -14,15 +14,15 @@ HBOND_NDX = "hbond.ndx"
 PAIR_PLOT = "hbond_pairs.png"
 RESIDUE_PLOT = "hbond_residues.png"
 
-# === PASO 1: Verificar archivos requeridos ===
+# === STEP 1: Check required files ===
 def check_required_files():
     for f in [PDB, TPR, NDX]:
         if not os.path.exists(f):
-            raise FileNotFoundError(f"Falta el archivo requerido: {f}")
+            raise FileNotFoundError(f"Missing required file: {f}")
 
-# === PASO 2: Ejecutar gmx hbond ===
+# === STEP 2: Run gmx hbond ===
 def run_gmx_hbond():
-    print("Ejecutando gmx hbond...")
+    print("Running gmx hbond...")
     cmd = [
         "gmx", "hbond",
         "-f", PDB,
@@ -34,7 +34,7 @@ def run_gmx_hbond():
     ]
     subprocess.run("echo 1\n1 | " + " ".join(cmd), shell=True, check=True)
 
-# === PASO 3: Convertir .xpm a CSV ===
+# === STEP 3: Convert .xpm to CSV ===
 def convert_xpm_to_csv(xpm_file, csv_file):
     with open(xpm_file, 'r') as f:
         lines = f.readlines()
@@ -45,10 +45,10 @@ def convert_xpm_to_csv(xpm_file, csv_file):
     df = pd.DataFrame(matrix).astype(int)
     df.to_csv(csv_file, index=False)
 
-# === PASO 4: Calcular ocurrencia por par ===
+# === STEP 4: Calculate occurrence by pair ===
 def calculate_occurrence(csv_file, ndx_file):
     df = pd.read_csv(csv_file)
-    df = df.T  # columnas = pares, filas = frames
+    df = df.T  # columns = pairs, rows = frames
 
     with open(ndx_file, 'r') as f:
         lines = f.readlines()
@@ -58,19 +58,19 @@ def calculate_occurrence(csv_file, ndx_file):
     occurrence = df.mean() * 100
     return df, occurrence.sort_values(ascending=False)
 
-# === Step 5: ocurrency by pairs ===
+# === STEP 5: Plot pair occurrence ===
 def plot_pair_occurrence(occurrence, output_file):
     sns.set(style="whitegrid")
     plt.figure(figsize=(12, 8))
     sns.barplot(x=occurrence.values, y=occurrence.index, palette="viridis")
-    plt.xlabel("Porcentaje de ocurrencia (%)", fontsize=12)
-    plt.ylabel("Par Donador-Aceptor", fontsize=12)
-    plt.title("Frecuencia de Puentes de Hidrógeno", fontsize=14)
+    plt.xlabel("Occurrence percentage (%)", fontsize=12)
+    plt.ylabel("Donor-Acceptor pair", fontsize=12)
+    plt.title("Hydrogen Bond Frequency", fontsize=14)
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
     plt.close()
 
-# === Step 6: hbond ocurrency ===
+# === STEP 6: Hydrogen bond occurrence by residue ===
 def calculate_residue_occurrence(df):
     residue_counts = {}
     for col in df.columns:
@@ -83,18 +83,18 @@ def calculate_residue_occurrence(df):
             residue_counts[acceptor_res] = residue_counts.get(acceptor_res, 0) + total
     return pd.Series(residue_counts).sort_values(ascending=False)
 
-# === PASO 7: Graficar ocurrencia por residuo ===
+# === STEP 7: Plot residue occurrence ===
 def plot_residue_occurrence(residue_series, output_file):
     plt.figure(figsize=(10, 6))
     sns.barplot(x=residue_series.values, y=residue_series.index, palette="mako")
-    plt.xlabel("Número total de ocurrencias", fontsize=12)
-    plt.ylabel("Residuo", fontsize=12)
-    plt.title("Ocurrencia de Puentes de Hidrógeno por Residuo", fontsize=14)
+    plt.xlabel("Total number of occurrences", fontsize=12)
+    plt.ylabel("Residue", fontsize=12)
+    plt.title("Hydrogen Bond Occurrence by Residue", fontsize=14)
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
     plt.close()
 
-# === Complete flow ===
+# === Complete workflow ===
 if __name__ == "__main__":
     check_required_files()
     run_gmx_hbond()
@@ -103,5 +103,4 @@ if __name__ == "__main__":
     plot_pair_occurrence(pair_occurrence, PAIR_PLOT)
     residue_occurrence = calculate_residue_occurrence(df)
     plot_residue_occurrence(residue_occurrence, RESIDUE_PLOT)
-    print(f"Gráficos generados: {PAIR_PLOT}, {RESIDUE_PLOT}")
-
+    print(f"Plots generated: {PAIR_PLOT}, {RESIDUE_PLOT}")
