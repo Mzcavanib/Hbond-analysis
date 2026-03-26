@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Graficar número de puentes de hidrógeno vs tiempo para múltiples archivos .xvg
-con líneas suavizadas (promedio móvil).
-Uso:
+Plot number of hydrogen bonds vs time for multiple .xvg files
+with smoothed lines (moving average).
+Usage:
     python3 hbond_vs_time.py hbond_wt_complex.xvg hbond_alpha_complex.xvg ...
 """
 
@@ -30,7 +30,7 @@ def load_xvg_data(filename):
     return np.array(times_ns), np.array(hbonds)
 
 def moving_average(y, window=50):
-    """Suavizado simple con promedio móvil."""
+    """Simple smoothing with moving average."""
     if len(y) < window:
         return y
     return np.convolve(y, np.ones(window)/window, mode='valid')
@@ -41,9 +41,9 @@ def plot_hbond_lines(all_data, output_file="hbonds_vs_time.png"):
         y_smooth = moving_average(hbonds, window=50)
         x_smooth = times_ns[:len(y_smooth)]
         plt.plot(x_smooth, y_smooth, linewidth=1.8, label=label)
-    plt.xlabel("Tiempo [ns]", fontsize=12)
-    plt.ylabel("Puentes de hidrógeno", fontsize=12)
-    plt.title("Puentes de hidrógeno vs tiempo (líneas suavizadas)")
+    plt.xlabel("Time [ns]", fontsize=12)
+    plt.ylabel("Hydrogen bonds", fontsize=12)
+    plt.title("Hydrogen bonds vs time (smoothed lines)")
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
@@ -52,11 +52,11 @@ def plot_hbond_lines(all_data, output_file="hbonds_vs_time.png"):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python3 hbond_vs_time.py archivo1.xvg archivo2.xvg ...")
+        print("Usage: python3 hbond_vs_time.py file1.xvg file2.xvg ...")
         sys.exit(1)
 
-    # Diccionario de etiquetas personalizadas
-    etiquetas = {
+    # Dictionary of custom labels
+    labels = {
         "hbond_WT_complex.xvg": "WT",
         "hbond_alpha_complex.xvg": "Alpha",
         "hbond_gamma_complex.xvg": "Gamma",
@@ -69,19 +69,18 @@ if __name__ == "__main__":
     for filename in sys.argv[1:]:
         times_ns, hbonds = load_xvg_data(filename)
         if len(times_ns) == 0 or len(hbonds) == 0:
-            print(f"{filename}: no contiene datos válidos")
+            print(f"{filename}: contains no valid data")
             continue
 
-        # Usa la etiqueta definida, si no existe usa el nombre del archivo
-        label = etiquetas.get(filename, filename)
+        # Use defined label, if not available use filename
+        label = labels.get(filename, filename)
         all_data[label] = (times_ns, hbonds)
 
-        print(f"\n=== Resultados para {label} ===")
-        print(f"Frames analizados: {len(times_ns)}")
-        print(f"Máximo de puentes en un frame: {max(hbonds)}")
-        print(f"Promedio de puentes por frame: {np.mean(hbonds):.2f}")
+        print(f"\n=== Results for {label} ===")
+        print(f"Frames analyzed: {len(times_ns)}")
+        print(f"Maximum bonds in a frame: {max(hbonds)}")
+        print(f"Average bonds per frame: {np.mean(hbonds):.2f}")
 
     if all_data:
         plot_hbond_lines(all_data)
-        print("\nGráfico generado: hbonds_vs_time.png")
-
+        print("\nPlot generated: hbonds_vs_time.png")
