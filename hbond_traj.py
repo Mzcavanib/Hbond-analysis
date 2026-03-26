@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-# === CONFIGURACIÓN ===
+# === CONFIGURATION ===
 XVGFILENAME = "hbonds.xvg"
 TIMESERIES_PLOT = "hbonds_vs_time.png"
 
@@ -25,9 +25,9 @@ def load_xvg_data(filename):
 def plot_hbond_timeseries(times_ns, hbonds, output_file):
     plt.figure(figsize=(10, 6))
     plt.plot(times_ns, hbonds, color='darkorange', linewidth=1.5)
-    plt.xlabel("Tiempo (ns)")
-    plt.ylabel("Puentes de hidrógeno")
-    plt.title("Cantidad de puentes de hidrógeno a lo largo de la trayectoria")
+    plt.xlabel("Time (ns)")
+    plt.ylabel("Hydrogen bonds")
+    plt.title("Number of hydrogen bonds along the trajectory")
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
@@ -38,5 +38,4 @@ if __name__ == "__main__":
     if times_ns and hbonds:
         plot_hbond_timeseries(times_ns, hbonds, TIMESERIES_PLOT)
     else:
-        print("No se encontraron datos válidos en el archivo .xvg.")
-
+        print("No valid data found in the .xvg file.")
