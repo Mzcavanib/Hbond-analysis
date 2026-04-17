@@ -40,12 +40,15 @@ def plot_hbond_lines(all_data, output_file="hbonds_vs_time.png"):
     for label, (times_ns, hbonds) in all_data.items():
         y_smooth = moving_average(hbonds, window=50)
         x_smooth = times_ns[:len(y_smooth)]
-        plt.plot(x_smooth, y_smooth, linewidth=1.8, label=label)
-    plt.xlabel("Time [ns]", fontsize=12)
-    plt.ylabel("Hydrogen bonds", fontsize=12)
-    plt.title("Hydrogen bonds vs time (smoothed lines)")
+        plt.plot(x_smooth, y_smooth, linewidth=2, label=label)
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.size'] = 15
+    plt.xlabel("Tiempo [ns]", fontsize=25)
+    plt.ylabel("Puentes de hidrógeno", fontsize=25)
+    #plt.title("Puentes de hidrógeno vs tiempo (líneas suavizadas)")
+    plt.tick_params(axis='both', which='major', labelsize=20)
     plt.grid(True, alpha=0.3)
-    plt.legend()
+    plt.legend(fontsize=10)
     plt.tight_layout()
     plt.savefig(output_file, dpi=300)
     plt.close()
@@ -55,7 +58,7 @@ if __name__ == "__main__":
         print("Usage: python3 hbond_vs_time.py file1.xvg file2.xvg ...")
         sys.exit(1)
 
-    # Dictionary of custom labels
+
     labels = {
         "hbond_WT_complex.xvg": "WT",
         "hbond_alpha_complex.xvg": "Alpha",
@@ -72,7 +75,6 @@ if __name__ == "__main__":
             print(f"{filename}: contains no valid data")
             continue
 
-        # Use defined label, if not available use filename
         label = labels.get(filename, filename)
         all_data[label] = (times_ns, hbonds)
 
